@@ -1,0 +1,31 @@
+name: Build LinConsol-Executable
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.303'
+
+      - name: Build project
+        run: dotnet publish -c Release -r win-x64 --self-contained true -o ./Exports
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: LinConsolEXE
+          path: ./Exports/
