@@ -1,10 +1,10 @@
-﻿using System;
-using System.Net.NetworkInformation;
-using System.Net;
+﻿using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
+using System.Net.Sockets;
 
 static class ProgramInfo
 {
-    public static readonly string Version = "0.0.10\n  Release date: 2025.01.01";
+    public static readonly string Version = "0.0.11\n  Release date: 2025.01.05";
     public static readonly string Name = "LINCONSOL";
 }
 
@@ -14,57 +14,76 @@ class LinConsol
     {
         Console.WriteLine($"Welcome to {ProgramInfo.Name}!");
         Console.WriteLine($"Enter `--help` for list of available commands.");
-        Console.WriteLine("Enter `--exit` to exit from console.");
 
         while (true)
         {
             Console.Write("\n> ");
             string input = Console.ReadLine()?.Trim();
 
-            if (input.Equals("--exit", StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrWhiteSpace(input))
             {
-                break;
+                Console.WriteLine("Please enter a command.\nType `--help` for assistance.");
+                continue;
             }
 
             ProcessCommand(input);
         }
     }
 
+    static readonly Dictionary<string, Action> CommandHandlers = new()
+    {
+        { "--help", ShowHelp },
+        { "--version", ShowVersion },
+        { "--exit", ExitProgram },
+        { "osinfo", ShowOSInfo },
+        { "ipinfo", () => ShowIPAddress().Wait() },
+        { "ping", CheckInternetConnection }
+    };
+
     static void ProcessCommand(string command)
     {
-        switch (command.ToLower())
-        {
-            case "--help":
-                ShowHelp();
-                break;
-            case "--version":
-                ShowVersion();
-                break;
-            case "osinfo":
-                ShowOSInfo();
-                break;
-            case "ipaddress":
-                ShowIPAddress();
-                break;
-            case "internetconn":
-                CheckInternetConnection();
-                break;
-            default:
+        if (CommandHandlers.TryGetValue(command.ToLower(), out var handler))
+            {
+                handler();
+            }
+            else
+            {
                 Console.WriteLine($"Unknown command `{command}`.");
-                Console.WriteLine($"Enter `--help` for list of available commands.");
-                break;
+                SuggestClosestCommand(command);
+                Console.WriteLine($"Or enter `--help` for list of available commands.");
+            }
+    }
+
+    static void SuggestClosestCommand(string input)
+    {
+        var suggestions = CommandHandlers.Keys.Where(cmd => cmd.Contains(input)).ToList();
+
+        if (suggestions.Any())
+        {
+            Console.WriteLine("Did you mean: ");
+            foreach (var suggestion in suggestions)
+            {
+                Console.WriteLine($"  {suggestion}");
+            }
         }
+    }
+
+    static void ExitProgram()
+    {
+        Environment.Exit(0);
     }
 
     static void ShowHelp()
     {
+        string appName = ProgramInfo.Name.ToLower();
+
         Console.WriteLine($"<==========>{ProgramInfo.Name} COMMANDS<==========>");
-        Console.WriteLine($"  --help        :    Get all available {ProgramInfo.Name.ToLower()} commands.");
-        Console.WriteLine($"  --version     :    Get current version of {ProgramInfo.Name.ToLower()}.");
-        Console.WriteLine($"  --exit        :    Exit from {ProgramInfo.Name.ToLower()} console.");
+        Console.WriteLine($"  --help        :    Get all available {appName} commands.");
+        Console.WriteLine($"  --version     :    Get current version of {appName}.");
+        Console.WriteLine($"  --exit        :    Exit from {appName} console.");
         Console.WriteLine("  osinfo        :    Get OS system information.");
-        Console.WriteLine("  ipaddress     :    Get IP-address of current device.");
-        Console.WriteLine("  internetconn  :    Check internet connection on device.");
+        Console.WriteLine("  ipinfo        :    Get IP-address of current device.");
+        Console.WriteLine("  ping          :    Check internet connection on device.");
         Console.WriteLine("<========================================>");
     }
 
@@ -81,38 +100,58 @@ class LinConsol
         }
 
         Console.WriteLine("<==========>OS INFO<==========>");
-        Console.WriteLine($"  OS          : {Environment.OSVersion}");
+        Console.WriteLine($"  OS          : {RuntimeInformation.OSDescription}");
         Console.WriteLine($"  System Type : {FindSystemType()}");
         Console.WriteLine($"  PC-name     : {Environment.MachineName}");
         Console.WriteLine($"  Username    : {Environment.UserName}");
         Console.WriteLine("<=============================>");
     }
 
-    static void ShowIPAddress()
+    static async Task<string> GetPublicIPAddress()
     {
-        string ipAddress = "Unknown";
+        using HttpClient client = new();
+        try
+        {
+            string publicIp = await client.GetStringAsync("https://api.ipify.org");
+            return publicIp.Trim();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching public IP address: {ex.Message}");
+            return "Unknown";
+        }
+    }
+
+    static async Task ShowIPAddress()
+    {
+        string localIpAddress = "Unknown";
+        string publicIpAddress = await GetPublicIPAddress();
 
         try
         {
-            string hostName = Dns.GetHostName();
-            var ipAddresses = Dns.GetHostAddresses(hostName);
-
-            foreach (var ip in ipAddresses)
+            foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
             {
-                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                if (ni.OperationalStatus == OperationalStatus.Up && ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
                 {
-                    ipAddress = ip.ToString();
-                    break;
+                    foreach (UnicastIPAddressInformation ip in ni.GetIPProperties().UnicastAddresses)
+                    {
+                        if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
+                        {
+                            localIpAddress = ip.Address.ToString();
+                            break;
+                        }
+                    }
                 }
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error getting ip address: {ex.Message}");
+            Console.WriteLine($"Error getting local IP address: {ex.Message}");
         }
 
-        Console.WriteLine("<==========>IP ADDRESS<==========>");
-        Console.WriteLine($"  IP         : {ipAddress}");
+        Console.WriteLine("<==========>IP INFO<==========>");
+        Console.WriteLine($"  Local IP   : {localIpAddress}");
+        Console.WriteLine($"  Public IP  : {publicIpAddress}");
         Console.WriteLine("  Location   : not available now");
         Console.WriteLine("  Provider   : not available now");
         Console.WriteLine("<=============================>");
@@ -127,6 +166,7 @@ class LinConsol
                 PingReply reply = ping.Send("8.8.8.8", 3000); // google dns
                 if (reply.Status == IPStatus.Success)
                 {
+                    Console.WriteLine("pong!");
                     Console.WriteLine("Internet connection is STABLE.");
                 }
                 else
@@ -135,9 +175,13 @@ class LinConsol
                 }
             }
         }
+        catch (PingException ex)
+        {
+            Console.WriteLine($"Network error: Unable to reach the server.\n  {ex.Message}.");
+        }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error checking internet connection: {ex.Message}");
+            Console.WriteLine($"Unexpected error: {ex.Message}.");
         }
     }
 }
