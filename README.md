@@ -1,7 +1,8 @@
-## LINCONSOL
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Tiny5&size=50&pause=1000&color=27F741&vCenter=true&width=435&lines=LINCONSOL)](https://git.io/typing-svg)
+
 `Interactive console that will help you better understand your PC`
 
-<img src="https://habrastorage.org/webt/9n/im/pc/9nimpc9eytjtr3go9e9emidbyge.gif" width="80%"/>
+<img src="https://habrastorage.org/webt/9n/im/pc/9nimpc9eytjtr3go9e9emidbyge.gif"/>
 
 So far only `Windows OS` is supported, but in the future it is planned to expand the possibilities of interaction with other systems.
 
