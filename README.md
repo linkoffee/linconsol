@@ -2,7 +2,7 @@
 
 `Interactive console that will help you better understand your PC`
 
-![Version](https://img.shields.io/badge/Version-0.0.11-dark)
+![Version](https://img.shields.io/badge/Version-0.0.12-dark)
 ![Status Badge](https://github.com/linkoffee/linconsol/actions/workflows/build.yml/badge.svg)
 
 <img src="https://habrastorage.org/webt/9n/im/pc/9nimpc9eytjtr3go9e9emidbyge.gif"/>
