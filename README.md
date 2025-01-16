@@ -2,8 +2,13 @@
 
 `Interactive console that will help you better understand your PC`
 
-![Version](https://img.shields.io/badge/Version-0.0.12-dark)
+![GitHub release (latest by date)](https://img.shields.io/github/release/linkoffee/linconsol?color=31C754&labelColor=353c43)
+![Apache 2.0 License](https://img.shields.io/github/license/linkoffee/linconsol?color=31C754&labelColor=353c43)
+![Opened Issues](https://img.shields.io/github/issues/linkoffee/linconsol?color=31C754&labelColor=353c43)\
+![Last Commit](https://img.shields.io/github/last-commit/linkoffee/linconsol?color=31C754&labelColor=353c43)
+![Repo size](https://img.shields.io/github/repo-size/linkoffee/linconsol?color=31C754&labelColor=353c43)
 ![Status Badge](https://github.com/linkoffee/linconsol/actions/workflows/build.yml/badge.svg)
+
 
 <img src="https://habrastorage.org/webt/9n/im/pc/9nimpc9eytjtr3go9e9emidbyge.gif"/>
 
