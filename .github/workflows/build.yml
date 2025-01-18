@@ -14,8 +14,11 @@ jobs:
 
     runs-on: windows-latest
 
-    steps:
+    strategy:
+      matrix:
+        runtime: [win-x64, win-x86]
 
+    steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
@@ -24,11 +27,11 @@ jobs:
         with:
           dotnet-version: '8.0.303'
 
-      - name: Build project
-        run: dotnet publish -c Release -r win-x64 --self-contained true -o ./Exports
+      - name: Build project (${{ matrix.runtime }})
+        run: dotnet publish -c Release -r ${{ matrix.runtime }} --self-contained true -o ./Exports/${{ matrix.runtime }}
 
-      - name: Upload artifacts
+      - name: Upload artifacts (${{ matrix.runtime }})
         uses: actions/upload-artifact@v3
         with:
-          name: LinConsolWIN64
-          path: ./Exports/
+          name: LinConsol_${{ matrix.runtime }}
+          path: ./Exports/${{ matrix.runtime }}
