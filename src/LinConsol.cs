@@ -1,4 +1,3 @@
-using System;
 using LinConsol.Commands;
 
 namespace LinConsol
