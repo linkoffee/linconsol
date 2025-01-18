@@ -1,11 +1,6 @@
-using System;
-using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Net.Http;
 using System.Text.Json;
-using System.Threading.Tasks;
-using LinConsol.Commands;
 
 namespace LinConsol.Utils
 {
@@ -45,7 +40,7 @@ namespace LinConsol.Utils
 
         public static async Task<IpInfo?> FetchIpInfo(string ipAddress)
         {
-            string apiKey = Environment.GetEnvironmentVariable("IPINFO_API_KEY");
+            string? apiKey = ConfigManager.GetApiKey();
             if (string.IsNullOrEmpty(apiKey))
             {
                 Console.WriteLine("Error: IPINFO API key not set. Please set your API key using the `ipinfo --setkey` command.");
@@ -63,10 +58,8 @@ namespace LinConsol.Utils
                     Console.WriteLine("API key might be missing or not valid.");
                     return null;
                 }
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
+
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 return JsonSerializer.Deserialize<IpInfo>(response, options);
             }
             catch (Exception ex)
