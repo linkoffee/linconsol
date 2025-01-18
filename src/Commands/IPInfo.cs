@@ -1,9 +1,3 @@
-using System;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
-using System.Net.Http;
-using System.Threading.Tasks;
-
 namespace LinConsol.Commands
 {
     static class IPInfo
@@ -25,7 +19,7 @@ namespace LinConsol.Commands
 
         public static void SetApiKey()
         {
-            string existingApiKey = Environment.GetEnvironmentVariable("IPINFO_API_KEY");
+            string? existingApiKey = Utils.ConfigManager.GetApiKey();
 
             if (!string.IsNullOrEmpty(existingApiKey))
             {
@@ -53,13 +47,13 @@ namespace LinConsol.Commands
                 return;
             }
 
-            Environment.SetEnvironmentVariable("IPINFO_API_KEY", newApiKey);
-            Console.WriteLine("API key has been set successfully.");
+            Utils.ConfigManager.SetApiKey(newApiKey);
+            Console.WriteLine("API key has been saved successfully.");
         }
 
         public static void ShowApiKey()
         {
-            string? apiKey = Environment.GetEnvironmentVariable("IPINFO_API_KEY");
+            string? apiKey = Utils.ConfigManager.GetApiKey();
 
             if (string.IsNullOrEmpty(apiKey))
             {
