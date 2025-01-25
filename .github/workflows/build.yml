@@ -28,10 +28,13 @@ jobs:
           dotnet-version: '8.0.303'
 
       - name: Build project (${{ matrix.runtime }})
-        run: dotnet publish -c Release -r ${{ matrix.runtime }} --self-contained true -o ./Exports/${{ matrix.runtime }}
+        run: dotnet publish -c Release -r ${{ matrix.runtime }} --self-contained true -o ./Exports/${{ matrix.runtime }} -p:PublishSingleFile=true -p:PublishTrimmed=true
+
+      - name: Add software license
+        run: cp LICENSE ./Exports/${{ matrix.runtime }}/LICENSE.txt
 
       - name: Upload artifacts (${{ matrix.runtime }})
         uses: actions/upload-artifact@v3
         with:
-          name: LinConsol_${{ matrix.runtime }}
+          name: linconsol_${{ matrix.runtime }}
           path: ./Exports/${{ matrix.runtime }}
