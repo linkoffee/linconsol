@@ -14,6 +14,7 @@ namespace LinConsol.Commands
             Console.WriteLine("  ipinfo            :    Get IP-address of current device.");
             Console.WriteLine("  ipinfo --setkey   :    Set api-key of ipinfo.io service.");
             Console.WriteLine("  ipinfo --showkey  :    Show current api-key of ipinfo.io service.");
+            Console.WriteLine("  hwinfo            :    Get hardware information.");
             Console.WriteLine("  ping              :    Check internet connection on device.");
             Console.WriteLine("<========================================>");
         }

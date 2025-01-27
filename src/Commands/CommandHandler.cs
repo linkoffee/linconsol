@@ -6,11 +6,12 @@ namespace LinConsol.Commands
         {
             { "--help", Help.Execute },
             { "--version", Version.Execute },
-            { "--exit", Exit },
+            { "--exit", Exit.Execute },
             { "osinfo", OSInfo.Execute },
             { "ipinfo", () => IPInfo.Execute().Wait() },
             { "ipinfo --setkey", IPInfo.SetApiKey },
             { "ipinfo --showkey", IPInfo.ShowApiKey },
+            { "hwinfo", HWInfo.Execute },
             { "ping", Ping.Execute }
         };
 
@@ -26,11 +27,6 @@ namespace LinConsol.Commands
                 Utils.SuggestCommand.SuggestClosestCommand(command, CommandHandlers.Keys);
                 Console.WriteLine($"Or enter `--help` for list of available commands.");
             }
-        }
-
-        static void Exit()
-        {
-            Environment.Exit(0);
         }
     }
 }
