@@ -8,4 +8,8 @@
     <ApplicationIcon>res/public/icon.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Management" Version="9.0.1" />
+  </ItemGroup>
+
 </Project>
