@@ -76,13 +76,13 @@ namespace LinConsol.Utils
             {
                 return $"{ipInfo.City}, {ipInfo.Region}, {ipInfo.Country}";
             }
-            return "Unknown Location";
+            return "Unknown";
         }
 
         public static async Task<string> GetProvider(string ipAddress)
         {
             var ipInfo = await FetchIpInfo(ipAddress);
-            return ipInfo?.Org ?? "Unknown Provider";
+            return ipInfo?.Org ?? "Unknown";
         }
 
         public class IpInfo
