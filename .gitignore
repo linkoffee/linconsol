@@ -1,17 +1,20 @@
-# Игнорируем временные и скомпилированные файлы
+# temporary and compiled files
 bin/
 obj/
 
-# Игнорируем файлы системы
+# sys files
 *.user
 *.suo
 *.sln.ide
 
-# Игнорируем файлы сборки
+# build files
 *.dll
 *.exe
 *.pdb
 
-# Игнорируем временные файлы
+# temporary files
 *.tmp
 *.log
+
+# private (for developers only)
+FEATURES.txt
