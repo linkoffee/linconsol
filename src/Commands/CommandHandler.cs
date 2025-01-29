@@ -7,6 +7,7 @@ namespace LinConsol.Commands
             { "--help", Help.Execute },
             { "--version", Version.Execute },
             { "--exit", Exit.Execute },
+            { "--clear", Clear.Execute },
             { "osinfo", OSInfo.Execute },
             { "ipinfo", () => IPInfo.Execute().Wait() },
             { "ipinfo --setkey", IPInfo.SetApiKey },
