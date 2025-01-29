@@ -1,5 +1,6 @@
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Net;
 using System.Text.Json;
 
 namespace LinConsol.Utils
@@ -24,6 +25,15 @@ namespace LinConsol.Utils
             return "Unknown";
         }
 
+        public static string GetIpType(string ipAddress)
+        {
+            if (IPAddress.TryParse(ipAddress, out IPAddress? ip) && ip != null)
+            {
+                return ip.AddressFamily == AddressFamily.InterNetworkV6 ? "IPv6" : "IPv4";
+            }
+            return "Unknown";
+        }
+
         public static async Task<string> GetPublicIPAddress()
         {
             using HttpClient client = new();
@@ -36,6 +46,20 @@ namespace LinConsol.Utils
             {
                 return "Unknown";
             }
+        }
+
+        public static async Task<string> CheckVpnProxy(string ipAddress)
+        {
+            var ipInfo = await FetchIpInfo(ipAddress);
+            if (ipInfo != null && !string.IsNullOrEmpty(ipInfo.Org))
+            {
+                string org = ipInfo.Org.ToLower();
+                if (org.Contains("vpn") || org.Contains("proxy") || org.Contains("tor"))
+                {
+                    return "Yes";
+                }
+            }
+            return "No";
         }
 
         public static async Task<IpInfo?> FetchIpInfo(string ipAddress)

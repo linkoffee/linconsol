@@ -8,10 +8,14 @@ namespace LinConsol.Commands
             string publicIpAddress = await Utils.Network.GetPublicIPAddress();
             string location = await Utils.Network.GetLocation(publicIpAddress);
             string provider = await Utils.Network.GetProvider(publicIpAddress);
+            string ipType = Utils.Network.GetIpType(publicIpAddress);
+            string vpnStatus = await Utils.Network.CheckVpnProxy(publicIpAddress);
 
             Console.WriteLine("<==========>IP INFO<==========>");
             Console.WriteLine($"  Local IP   : {localIpAddress}");
             Console.WriteLine($"  Public IP  : {publicIpAddress}");
+            Console.WriteLine($"  IP Type    : {ipType}");
+            Console.WriteLine($"  VPN/Proxy  : {vpnStatus}");
             Console.WriteLine($"  Location   : {location}");
             Console.WriteLine($"  Provider   : {provider}");
             Console.WriteLine("<=============================>");
