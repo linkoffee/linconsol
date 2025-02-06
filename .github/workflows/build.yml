@@ -34,7 +34,7 @@ jobs:
         run: cp LICENSE ./Exports/${{ matrix.runtime }}/LICENSE.txt
 
       - name: Upload artifacts (${{ matrix.runtime }})
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: linconsol_${{ matrix.runtime }}
           path: ./Exports/${{ matrix.runtime }}
