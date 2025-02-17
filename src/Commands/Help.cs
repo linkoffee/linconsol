@@ -6,7 +6,7 @@ namespace LinConsol.Commands
         {
             string appName = ProgramInfo.Name.ToLower();
 
-            Console.WriteLine($"<====================================================>{ProgramInfo.Name} COMMANDS<====================================================>");
+            Console.WriteLine($"<=========================>{ProgramInfo.Name} COMMANDS<=========================>");
             Console.WriteLine($"  --help                                   :  Get all available {appName} commands.");
             Console.WriteLine($"  --version                                :  Get current version of {appName}.");
             Console.WriteLine($"  --exit                                   :  Exit from {appName} console.");
@@ -28,7 +28,7 @@ namespace LinConsol.Commands
             Console.WriteLine("                                                  - State (Condition of the process).");
             Console.WriteLine("                                                [--desc] - An optional parameter that will sort the process list from LARGE to SMALL value.");
             Console.WriteLine("  ping                                     :  Check internet connection on device.");
-            Console.WriteLine("<======================================================================================================================================>");
+            Console.WriteLine("<================================================================================>");
         }
     }
 }
