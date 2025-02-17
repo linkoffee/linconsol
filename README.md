@@ -10,7 +10,7 @@
 ![Status Badge](https://github.com/linkoffee/linconsol/actions/workflows/build.yml/badge.svg)
 
 
-<img src="https://habrastorage.org/webt/cx/s6/xc/cxs6xc4uc7bv7uphuhcorspjlte.gif" />
+<img src="https://habrastorage.org/webt/qc/lz/lm/qclzlmcljzkzvnwoe37l7otfuvy.gif" />
 
 So far only `Windows OS` is supported, but in the future it is planned to expand the possibilities of interaction with other systems.
 
