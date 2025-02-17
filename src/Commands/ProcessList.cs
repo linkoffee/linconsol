@@ -13,26 +13,17 @@ namespace LinConsol.Commands
 
             bool isDescending = args.Contains("--desc");
             int sortArgsIndex = Array.IndexOf(args, "--sort-by");
-            if (sortArgsIndex == -1 || sortArgsIndex == args.Length - 1)
-            {
-                Console.WriteLine("Usage: processlist --sort-by Column1,Column2,... --desc");
-                return;
-            }
+            string? sortColumn = null;
 
-            List<string> columnParts = new();
-            for (int i = sortArgsIndex + 1; i < args.Length; i++)
+            if (sortArgsIndex != -1 && sortArgsIndex < args.Length - 1)
             {
-                if (args[i].StartsWith("--")) break;
-                columnParts.Add(args[i]);
-            }
-
-            string sortColumn = string.Join(" ", columnParts);
-
-            if (!validColumns.Contains(sortColumn))
-            {
-                Console.WriteLine($"Invalid column: {sortColumn}");
-                Console.WriteLine($"Available columns: {string.Join(", ", validColumns)}");
-                return;
+                sortColumn = string.Join(" ", args.Skip(sortArgsIndex + 1).TakeWhile(arg => !arg.StartsWith("--")));
+                if (!validColumns.Contains(sortColumn))
+                {
+                    Console.WriteLine($"Invalid column: {sortColumn}");
+                    Console.WriteLine($"Available columns: {string.Join(", ", validColumns)}");
+                    return;
+                }
             }
 
             int maxPidLength = Math.Max("PID".Length, processes.Max(p => p.Id.ToString().Length));
@@ -52,14 +43,17 @@ namespace LinConsol.Commands
                 State = p.Responding ? "Running" : "Not Responding"
             });
 
-            sortedProcesses = sortColumn switch
+            if (sortColumn != null)
             {
-                "PID" => isDescending ? sortedProcesses.OrderByDescending(p => p.PID) : sortedProcesses.OrderBy(p => p.PID),
-                "Name" => isDescending ? sortedProcesses.OrderByDescending(p => p.Name) : sortedProcesses.OrderBy(p => p.Name),
-                "Memory Usage" => isDescending ? sortedProcesses.OrderByDescending(p => p.MemoryUsage) : sortedProcesses.OrderBy(p => p.MemoryUsage),
-                "State" => isDescending ? sortedProcesses.OrderByDescending(p => p.State) : sortedProcesses.OrderBy(p => p.State),
-                _ => sortedProcesses
-            };
+                sortedProcesses = sortColumn switch
+                {
+                    "PID" => isDescending ? sortedProcesses.OrderByDescending(p => p.PID) : sortedProcesses.OrderBy(p => p.PID),
+                    "Name" => isDescending ? sortedProcesses.OrderByDescending(p => p.Name) : sortedProcesses.OrderBy(p => p.Name),
+                    "Memory Usage" => isDescending ? sortedProcesses.OrderByDescending(p => p.MemoryUsage) : sortedProcesses.OrderBy(p => p.MemoryUsage),
+                    "State" => isDescending ? sortedProcesses.OrderByDescending(p => p.State) : sortedProcesses.OrderBy(p => p.State),
+                    _ => sortedProcesses
+                };
+            }
 
             foreach (var process in sortedProcesses)
             {
