@@ -1,3 +1,4 @@
+using LibreHardwareMonitor.Hardware;
 using System.Management;
 
 namespace LinConsol.Commands
@@ -7,13 +8,15 @@ namespace LinConsol.Commands
         public static void Execute()
         {
             Console.WriteLine("<==========>HARDWARE INFO<==========>");
-            Console.WriteLine($"  CPU            : {GetCpuInfo()}");
-            Console.WriteLine($"  GPU            : {GetGpuInfo()}");
-            Console.WriteLine($"  Total RAM      : {GetTotalRAM()}");
-            Console.WriteLine($"  Free RAM       : {GetFreeRAM()}");
-            Console.WriteLine($"  Motherboard    : {GetMotherboardInfo()}");
-            Console.WriteLine($"  BIOS Version   : {GetBiosVersion()}");
-            Console.WriteLine($"  Disk Drives    : {GetDiskDrivesInfo()}");
+            Console.WriteLine($"  CPU              : {GetCpuInfo()}");
+            Console.WriteLine($"  CPU Temperature  : {GetCpuTemperature()}");
+            Console.WriteLine($"  GPU              : {GetGpuInfo()}");
+            Console.WriteLine($"  GPU Temperature  : {GetGpuTemperature()}");
+            Console.WriteLine($"  Total RAM        : {GetTotalRAM()}");
+            Console.WriteLine($"  Free RAM         : {GetFreeRAM()}");
+            Console.WriteLine($"  Motherboard      : {GetMotherboardInfo()}");
+            Console.WriteLine($"  BIOS Version     : {GetBiosVersion()}");
+            Console.WriteLine($"  Disk Drives      : {GetDiskDrivesInfo()}");
             Console.WriteLine("<===================================>");
         }
 
@@ -28,6 +31,46 @@ namespace LinConsol.Commands
             }
             return "Unknown";
         }
+        
+        private static string GetCpuTemperature()
+        {
+            var computer = new Computer
+            {
+                IsCpuEnabled = true
+            };
+            computer.Open();
+
+            string temperature = "Unknown";
+
+            foreach (var hardware in computer.Hardware)
+            {
+                if (hardware.HardwareType == HardwareType.Cpu)
+                {
+                    hardware.Update();
+
+                    foreach (var sensor in hardware.Sensors)
+                    {
+                        if (sensor.SensorType == SensorType.Temperature && sensor.Value.HasValue)
+                        {
+                            float tempValue = sensor.Value.Value;
+
+                            if (tempValue > 0)
+                            {
+                                temperature = $"{tempValue}°C";
+                            }
+                            else
+                            {
+                                temperature = "Unknown";
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+            computer.Close();
+            return temperature;
+        }
 
         private static string GetGpuInfo()
         {
@@ -41,13 +84,41 @@ namespace LinConsol.Commands
             return "Unknown";
         }
 
+        private static string GetGpuTemperature()
+        {
+            var computer = new Computer
+            {
+                IsGpuEnabled = true
+            };
+            computer.Open();
+
+            string temperature = "Unknown";
+
+            foreach (var hardware in computer.Hardware)
+            {
+                if (hardware.HardwareType == HardwareType.GpuNvidia || hardware.HardwareType == HardwareType.GpuAmd)
+                {
+                    hardware.Update();
+                    var sensor = hardware.Sensors.FirstOrDefault(s => s.SensorType == SensorType.Temperature);
+                    if (sensor != null && sensor.Value.HasValue)
+                    {
+                        temperature = $"{sensor.Value.Value}°C";
+                        break;
+                    }
+                }
+            }
+
+            computer.Close();
+            return temperature;
+        }
+
         private static string GetTotalRAM()
         {
             using (var searcher = new ManagementObjectSearcher("select TotalVisibleMemorySize from Win32_OperatingSystem"))
             {
                 foreach (var item in searcher.Get())
                 {
-                    return $"{Convert.ToInt64(item["TotalVisibleMemorySize"]) / 1024} GB";
+                    return $"{Convert.ToInt64(item["TotalVisibleMemorySize"]) / 1024} MB";
                 }
             }
             return "Unknown";
@@ -59,7 +130,7 @@ namespace LinConsol.Commands
             {
                 foreach (var item in searcher.Get())
                 {
-                    return $"{Convert.ToInt64(item["FreePhysicalMemory"]) / 1024} GB";
+                    return $"{Convert.ToInt64(item["FreePhysicalMemory"]) / 1024} MB";
                 }
             }
             return "Unknown";
