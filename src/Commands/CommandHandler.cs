@@ -17,6 +17,7 @@ namespace LinConsol.Commands
             { "userinfo", args => UserInfo.Execute() },
             { "batteryinfo", args => BatteryInfo.Execute() },
             { "processlist", ProcessList.Execute },
+            { "networklist", NetworkList.Execute },
             { "devicelist", DeviceList.Execute },
             { "ping", args => Ping.Execute() }
         };

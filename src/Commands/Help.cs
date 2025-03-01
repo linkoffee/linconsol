@@ -27,6 +27,14 @@ namespace LinConsol.Commands
             Console.WriteLine("                                                  - Memory Usage (Occupied memory in the process in MB).");
             Console.WriteLine("                                                  - State (Condition of the process).");
             Console.WriteLine("                                                [--desc] - An optional parameter that will sort the process list from LARGE to SMALL value.");
+            Console.WriteLine("  networklist                              :  Get a list of all network interfaces (Without sorting).");
+            Console.WriteLine("  networklist --sort-by ColumnName --desc  :  Get a list of all network interfaces.");
+            Console.WriteLine("                                                <ColumnName> - The name of the column on which sorting occurs (MAX 1).");
+            Console.WriteLine("                                                  - Interface (Interface name).");
+            Console.WriteLine("                                                  - IPv4 Address.");
+            Console.WriteLine("                                                  - MAC Address.");
+            Console.WriteLine("                                                  - Status (Condition of the interface).");
+            Console.WriteLine("                                                [--desc] - An optional parameter that will sort the process list from LARGE to SMALL value.");
             Console.WriteLine("  devicelist                               :  Get a list of all connected devices (Without sorting).");
             Console.WriteLine("  devicelist --sort-by ColumnName --desc   :  Get a list of all connected devices.");
             Console.WriteLine("                                                <ColumnName> - The name of the column on which sorting occurs (MAX 1).");
