@@ -11,7 +11,6 @@ namespace LinConsol.Commands
             Console.WriteLine($"  CPU              : {GetCpuInfo()}");
             Console.WriteLine($"  CPU Temperature  : {GetCpuTemperature()}");
             Console.WriteLine($"  GPU              : {GetGpuInfo()}");
-            Console.WriteLine($"  GPU Temperature  : {GetGpuTemperature()}");
             Console.WriteLine($"  Total RAM        : {GetTotalRAM()}");
             Console.WriteLine($"  Free RAM         : {GetFreeRAM()}");
             Console.WriteLine($"  Motherboard      : {GetMotherboardInfo()}");
@@ -82,34 +81,6 @@ namespace LinConsol.Commands
                 }
             }
             return "Unknown";
-        }
-
-        private static string GetGpuTemperature()
-        {
-            var computer = new Computer
-            {
-                IsGpuEnabled = true
-            };
-            computer.Open();
-
-            string temperature = "Unknown";
-
-            foreach (var hardware in computer.Hardware)
-            {
-                if (hardware.HardwareType == HardwareType.GpuNvidia || hardware.HardwareType == HardwareType.GpuAmd)
-                {
-                    hardware.Update();
-                    var sensor = hardware.Sensors.FirstOrDefault(s => s.SensorType == SensorType.Temperature);
-                    if (sensor != null && sensor.Value.HasValue)
-                    {
-                        temperature = $"{sensor.Value.Value}°C";
-                        break;
-                    }
-                }
-            }
-
-            computer.Close();
-            return temperature;
         }
 
         private static string GetTotalRAM()
