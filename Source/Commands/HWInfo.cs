@@ -9,7 +9,6 @@ namespace LinConsol.Commands
         {
             Console.WriteLine("<==========>HARDWARE INFO<==========>");
             Console.WriteLine($"  CPU              : {GetCpuInfo()}");
-            Console.WriteLine($"  CPU Temperature  : {GetCpuTemperature()}");
             Console.WriteLine($"  GPU              : {GetGpuInfo()}");
             Console.WriteLine($"  Total RAM        : {GetTotalRAM()}");
             Console.WriteLine($"  Free RAM         : {GetFreeRAM()}");
