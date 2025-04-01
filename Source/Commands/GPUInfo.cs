@@ -1,6 +1,6 @@
+using System.Globalization;
 using System.Management;
 using LibreHardwareMonitor.Hardware;
-using SharpDX.DXGI;
 
 namespace LinConsol.Commands
 {
@@ -35,36 +35,40 @@ namespace LinConsol.Commands
         {
             try
             {
-                using (var factory = new Factory1())
+                var computer = new Computer { IsGpuEnabled = true };
+                computer.Open();
+
+                foreach (var hardware in computer.Hardware)
                 {
-                    int adapterCount = factory.GetAdapterCount1();
-                    if (adapterCount == 0)
-                        return "No GPU adapters found";
-
-                    for (int i = 0; i < adapterCount; i++)
+                    if (hardware.HardwareType == HardwareType.GpuNvidia || 
+                        hardware.HardwareType == HardwareType.GpuAmd ||
+                        hardware.HardwareType == HardwareType.GpuIntel)
                     {
-                        using (var adapter = factory.GetAdapter1(i))
+                        hardware.Update();
+                        
+                        var loadSensor = hardware.Sensors
+                            .FirstOrDefault(s => s.SensorType == SensorType.Load && 
+                                            (s.Name.Contains("GPU Core") || 
+                                            s.Name.Contains("D3D 3D") || 
+                                            s.Name.Contains("GPU")));
+                        
+                        loadSensor ??= hardware.Sensors
+                            .FirstOrDefault(s => s.SensorType == SensorType.Load);
+                        
+                        if (loadSensor?.Value != null)
                         {
-                            var desc = adapter.Description1;
-                            long dedicatedMemory = desc.DedicatedVideoMemory;
-
-                            if (dedicatedMemory > 0)
-                            {
-                                long memoryUsedMB = dedicatedMemory / 1048576;
-                                return $"{memoryUsedMB} MB used";
-                            }
+                            computer.Close();
+                            return string.Format(CultureInfo.InvariantCulture, "{0:0.0}%", loadSensor.Value);
                         }
                     }
                 }
-                return "No dedicated memory detected";
-            }
-            catch (OverflowException ex)
-            {
-                return $"Overflow error ({ex.Message})";
+                
+                computer.Close();
+                return "Unknown";
             }
             catch (Exception ex)
             {
-                return $"Error getting load ({ex.Message})";
+                return $"Error: {ex.Message}";
             }
         }
 
