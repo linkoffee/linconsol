@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ApplicationIcon>Resources/Public/icon.ico</ApplicationIcon>
+    <ApplicationManifest>Properties/app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
