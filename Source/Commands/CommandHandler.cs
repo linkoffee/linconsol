@@ -14,6 +14,7 @@ namespace LinConsol.Commands
             { "ipinfo --showkey", args => IPInfo.ShowApiKey() },
             { "hwinfo", args => HWInfo.Execute() },
             { "gpuinfo", args => GPUInfo.Execute() },
+            { "cpuinfo", args => CPUInfo.Execute() },
             { "timeinfo", args => TimeInfo.Execute() },
             { "userinfo", args => UserInfo.Execute() },
             { "batteryinfo", args => BatteryInfo.Execute() },

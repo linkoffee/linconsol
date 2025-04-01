@@ -17,6 +17,7 @@ namespace LinConsol.Commands
             Console.WriteLine("  ipinfo --showkey                         :  Show current api-key of ipinfo.io service.");
             Console.WriteLine("  hwinfo                                   :  Get hardware information.");
             Console.WriteLine("  gpuinfo                                  :  Get detailed information about the PC GPU.");
+            Console.WriteLine("  cpuinfo                                  :  Get detailed information about the PC CPU.");
             Console.WriteLine("  timeinfo                                 :  Get device time information.");
             Console.WriteLine("  userinfo                                 :  Get information about the current system user.");
             Console.WriteLine("  batteryinfo                              :  Get information about the battery (ON LAPTOPS).");
